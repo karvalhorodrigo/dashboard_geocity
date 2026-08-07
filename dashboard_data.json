@@ -1,0 +1,196 @@
+{
+  "total_lotes": 14625,
+  "total_edificacoes": 13728,
+  "total_bairros": 24,
+  "total_ruas": 548,
+  "total_proprietarios": 10122,
+  "top_bairros": [
+    {
+      "bairro": "Centro",
+      "count": 1753
+    },
+    {
+      "bairro": "Mongubas",
+      "count": 1523
+    },
+    {
+      "bairro": "Bailarina",
+      "count": 1224
+    },
+    {
+      "bairro": "Morada Dos Ventos",
+      "count": 1129
+    },
+    {
+      "bairro": "Morada Nova",
+      "count": 1018
+    },
+    {
+      "bairro": "Sítio Buriti",
+      "count": 1015
+    },
+    {
+      "bairro": "São Felipe",
+      "count": 947
+    },
+    {
+      "bairro": "Rodagem",
+      "count": 926
+    },
+    {
+      "bairro": "Pedrinhas",
+      "count": 834
+    },
+    {
+      "bairro": "Monsenhor Edson Magalhães",
+      "count": 665
+    }
+  ],
+  "infraestrutura": {
+    "agua": {
+      "sim_count": 10665,
+      "pct": 72.92
+    },
+    "energia": {
+      "sim_count": 14407,
+      "pct": 98.51
+    },
+    "esgoto": {
+      "sim_count": 3901,
+      "pct": 26.67
+    },
+    "pavimentacao": {
+      "sim_count": 11203,
+      "pct": 76.6
+    },
+    "coleta_lixo": {
+      "sim_count": 393,
+      "pct": 2.69
+    },
+    "calcada": {
+      "sim_count": 708,
+      "pct": 4.84
+    },
+    "drenagem": {
+      "sim_count": 20,
+      "pct": 0.14
+    }
+  },
+  "geometrias_invalidas": 8,
+  "lotes_sem_rua": 515,
+  "lotes_cadastro_status": {
+    "com_cadastro": 10216,
+    "sem_cadastro": 4409
+  },
+  "lotes_por_usuario": [
+    {
+      "usuario": "postgres",
+      "count": 14566
+    },
+    {
+      "usuario": "Não Informado",
+      "count": 51
+    },
+    {
+      "usuario": "tiago_topogeo",
+      "count": 6
+    },
+    {
+      "usuario": "eriva_topogeo",
+      "count": 1
+    },
+    {
+      "usuario": "TIAGO_003",
+      "count": 1
+    }
+  ],
+  "lotes_por_dia_timeline": [
+    {
+      "data": "2026-06-03",
+      "Não Informado": 9
+    },
+    {
+      "data": "2026-06-04",
+      "Não Informado": 4
+    },
+    {
+      "data": "2026-06-09",
+      "Não Informado": 1
+    },
+    {
+      "data": "2026-06-11",
+      "postgres": 2,
+      "Não Informado": 1
+    },
+    {
+      "data": "2026-06-12",
+      "postgres": 2
+    },
+    {
+      "data": "2026-06-15",
+      "Não Informado": 10
+    },
+    {
+      "data": "2026-06-18",
+      "postgres": 2
+    },
+    {
+      "data": "2026-06-23",
+      "postgres": 1
+    },
+    {
+      "data": "2026-06-25",
+      "postgres": 1
+    },
+    {
+      "data": "2026-06-26",
+      "Não Informado": 1,
+      "postgres": 1
+    },
+    {
+      "data": "2026-06-30",
+      "postgres": 1
+    },
+    {
+      "data": "2026-07-01",
+      "Não Informado": 2,
+      "postgres": 3
+    },
+    {
+      "data": "2026-07-02",
+      "Não Informado": 6,
+      "postgres": 2
+    },
+    {
+      "data": "2026-07-06",
+      "Não Informado": 1,
+      "postgres": 2
+    },
+    {
+      "data": "2026-07-24",
+      "postgres": 1
+    },
+    {
+      "data": "2026-07-26",
+      "postgres": 1
+    },
+    {
+      "data": "2026-07-27",
+      "tiago_topogeo": 4,
+      "postgres": 4
+    },
+    {
+      "data": "2026-07-28",
+      "tiago_topogeo": 1
+    },
+    {
+      "data": "2026-07-29",
+      "eriva_topogeo": 1,
+      "tiago_topogeo": 1
+    },
+    {
+      "data": "2026-08-07",
+      "TIAGO_003": 1
+    }
+  ]
+}
