@@ -1629,47 +1629,27 @@
                               "count": 13634
                     },
                     {
-                              "usuario": "usuario_2_topogeo",
-                              "count": 771
+                              "usuario": "Não Informado",
+                              "count": 775
                     },
                     {
-                              "usuario": "tiago_topogeo",
-                              "count": 103
+                              "usuario": "Tiago",
+                              "count": 145
                     },
                     {
-                              "usuario": "eriva_topogeo",
-                              "count": 58
+                              "usuario": "Erivan Rocha",
+                              "count": 63
                     },
                     {
-                              "usuario": "TIAGO_003",
-                              "count": 42
-                    },
-                    {
-                              "usuario": "RENE_FREITAS_002",
+                              "usuario": "Rene Freitas",
                               "count": 9
                     },
                     {
-                              "usuario": "ERIVAN_ROCHA_001",
-                              "count": 5
-                    },
-                    {
-                              "usuario": "Não Informado",
-                              "count": 4
-                    },
-                    {
-                              "usuario": "BRUNO_004",
+                              "usuario": "Bruno",
                               "count": 1
                     }
           ],
           "lotes_por_dia_timeline": [
-                    {
-                              "data": "2026-05-13",
-                              "postgres": 4612
-                    },
-                    {
-                              "data": "2026-05-28",
-                              "postgres": 1
-                    },
                     {
                               "data": "2026-06-09",
                               "Não Informado": 1
@@ -1679,82 +1659,51 @@
                               "Não Informado": 1
                     },
                     {
-                              "data": "2026-06-18",
-                              "postgres": 1
-                    },
-                    {
                               "data": "2026-07-01",
                               "Não Informado": 2
                     },
                     {
-                              "data": "2026-07-06",
-                              "postgres": 2
-                    },
-                    {
-                              "data": "2026-07-08",
-                              "postgres": 9007
-                    },
-                    {
                               "data": "2026-07-24",
-                              "postgres": 1,
-                              "usuario_2_topogeo": 27
-                    },
-                    {
-                              "data": "2026-07-26",
-                              "postgres": 1
+                              "Não Informado": 27
                     },
                     {
                               "data": "2026-07-27",
-                              "usuario_2_topogeo": 354,
-                              "tiago_topogeo": 33,
-                              "postgres": 4,
-                              "eriva_topogeo": 27
+                              "Não Informado": 354,
+                              "Tiago": 33,
+                              "Erivan Rocha": 27
                     },
                     {
                               "data": "2026-07-28",
-                              "usuario_2_topogeo": 35,
-                              "tiago_topogeo": 16,
-                              "eriva_topogeo": 1
+                              "Não Informado": 35,
+                              "Tiago": 16,
+                              "Erivan Rocha": 1
                     },
                     {
                               "data": "2026-07-29",
-                              "tiago_topogeo": 31,
-                              "eriva_topogeo": 17,
-                              "usuario_2_topogeo": 323
+                              "Tiago": 31,
+                              "Erivan Rocha": 17,
+                              "Não Informado": 323
                     },
                     {
                               "data": "2026-07-30",
-                              "eriva_topogeo": 13,
-                              "tiago_topogeo": 23,
-                              "usuario_2_topogeo": 32
+                              "Erivan Rocha": 13,
+                              "Tiago": 23,
+                              "Não Informado": 32
                     },
                     {
                               "data": "2026-08-07",
-                              "BRUNO_004": 1,
-                              "RENE_FREITAS_002": 1,
-                              "TIAGO_003": 5
+                              "Bruno": 1,
+                              "Rene Freitas": 1,
+                              "Tiago": 5
                     },
                     {
                               "data": "2026-08-10",
-                              "RENE_FREITAS_002": 8,
-                              "ERIVAN_ROCHA_001": 5,
-                              "TIAGO_003": 37
+                              "Rene Freitas": 8,
+                              "Erivan Rocha": 5,
+                              "Tiago": 37
                     }
           ]
 };
-
-        let chartBairros = null;
-        let chartCadastro = null;
-        let chartTimeline = null;
-        let map = null;
-        let tileLayer = null;
-
-        const MODOS_TEMA = ['automatico', 'claro', 'escuro'];
-        const ROTULOS_TEMA = {
-            automatico: { icone: 'brightness_auto', rotulo: 'Automático (segue o sistema)' },
-            claro: { icone: 'light_mode', rotulo: 'Claro' },
-            escuro: { icone: 'dark_mode', rotulo: 'Escuro' }
-        };
         let modoTemaAtual = 'automatico';
 
         function sistemaPrefereEscuro() {
@@ -2000,14 +1949,10 @@
             });
 
             const userColors = {
-                'postgres': 'var(--cor-marca)',
-                'usuario_2_topogeo': '#38bdf8',
-                'tiago_topogeo': 'var(--cor-institucional)',
-                'eriva_topogeo': 'var(--cor-critico)',
-                'TIAGO_003': '#a855f7',
-                'RENE_FREITAS_002': '#f59e0b',
-                'ERIVAN_ROCHA_001': '#10b981',
-                'BRUNO_004': '#ec4899',
+                'Tiago': 'var(--cor-marca)',
+                'Erivan Rocha': 'var(--cor-institucional)',
+                'Bruno': '#ec4899',
+                'Rene Freitas': '#f59e0b',
                 'Não Informado': '#64748b'
             };
 

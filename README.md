@@ -32,20 +32,18 @@ O arquivo [`dashboard_gerencial.html`](file:///c:/Users/RodrigoC/Downloads/reuuu
     *   Substituiu o antigo gráfico de uso.
     *   **Métrica**: Definimos como **"Com Cadastro"** os lotes que possuem o nome do proprietário (`nm_proprietario_espelho`) preenchido no banco de dados.
     *   **Resultado**: **10.216 lotes** (69.85%) estão cadastrados e **4.409 lotes** (30.15%) constam sem cadastro.
-2.  **Lotes por Usuário (Atualizações)**:
-    *   Lista de ranking de usuários baseada na coluna `usr_atualizado`.
-    *   **postgres**: `13.634` lotes atualizados.
-    *   **usuario_2_topogeo**: `771` lotes atualizados.
-    *   **tiago_topogeo**: `103` lotes atualizados.
-    *   **eriva_topogeo**: `58` lotes atualizados.
-    *   **TIAGO_003**: `42` lotes atualizados.
-    *   **RENE_FREITAS_002**: `9` lotes atualizados.
-    *   **ERIVAN_ROCHA_001**: `5` lotes atualizados.
-    *   **BRUNO_004**: `1` lote atualizado.
-    *   *Sem informação de usuário*: `4` lotes.
+2.  **Lotes por Usuário (Atualizações com Nomenclatura Unificada)**:
+    *   Lista de ranking de produtividade baseada na coluna `usr_atualizado`.
+    *   **postgres**: `13.634` lotes.
+    *   **Não Informado**: `775` lotes (unificando `usuario_2_topogeo` e cadastros sem usuário).
+    *   **Tiago**: `145` lotes (unificando `tiago_topogeo` e `TIAGO_003`).
+    *   **Erivan Rocha**: `63` lotes (unificando `eriva_topogeo` e `ERIVAN_ROCHA_001`).
+    *   **Rene Freitas**: `9` lotes (`RENE_FREITAS_002`).
+    *   **Bruno**: `1` lote (`BRUNO_004`).
 3.  **Lotes por Usuário por Dia (Linha do Tempo)**:
     *   Gráfico cronológico interativo (`chart-timeline`) baseado em `dt_atualizado` e `usr_atualizado`.
-    *   Exibe a contagem de lotes manipulados dia a dia para cada usuário ativo no banco, com paleta de cores exclusiva para cada cadastrante.
+    *   Exclusão do usuário de sistema `postgres` para focar exclusivamente na produtividade da equipe em campo e escritório.
+    *   Exclusão automática de usuários com 0 alterações da legenda e dos tooltips diários.
 
 ---
 
