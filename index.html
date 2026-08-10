@@ -2017,21 +2017,25 @@
                 return entry.data;
             });
 
-            const datasets = Array.from(uniqueUsers).map(usr => {
-                const dataPoints = dbData.lotes_por_dia_timeline.map(entry => entry[usr] || 0);
-                const color = userColors[usr] || '#3b66ff';
-                return {
-                    label: usr,
-                    data: dataPoints,
-                    borderColor: color,
-                    backgroundColor: color + '15',
-                    borderWidth: 2,
-                    pointRadius: 3,
-                    pointHoverRadius: 5,
-                    tension: 0.25,
-                    fill: false
-                };
-            });
+            const datasets = Array.from(uniqueUsers)
+                .map(usr => {
+                    const dataPoints = dbData.lotes_por_dia_timeline.map(entry => entry[usr] || 0);
+                    const totalUpdates = dataPoints.reduce((a, b) => a + b, 0);
+                    const color = userColors[usr] || '#3b66ff';
+                    return {
+                        label: usr,
+                        data: dataPoints,
+                        totalUpdates: totalUpdates,
+                        borderColor: color,
+                        backgroundColor: color + '15',
+                        borderWidth: 2,
+                        pointRadius: (ctx) => (ctx.raw > 0 ? 4 : 0),
+                        pointHoverRadius: (ctx) => (ctx.raw > 0 ? 6 : 0),
+                        tension: 0.25,
+                        fill: false
+                    };
+                })
+                .filter(ds => ds.totalUpdates > 0);
 
             chartTimeline = new Chart(ctxTimeline, {
                 type: 'line',
@@ -2056,6 +2060,9 @@
                             }
                         },
                         tooltip: {
+                            filter: function(tooltipItem) {
+                                return tooltipItem.raw > 0;
+                            },
                             backgroundColor: 'rgba(255, 255, 255, 0.95)',
                             titleFont: { size: 12, weight: 'semibold', family: 'Outfit' },
                             bodyFont: { size: 11, family: 'Outfit' },
