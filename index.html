@@ -785,6 +785,109 @@
             background: linear-gradient(to right, var(--cor-institucional), var(--cor-marca));
         }
 
+        .geo-tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--cor-borda);
+            border-radius: var(--raio-medio);
+            background: var(--leitura-fundo);
+            color: var(--cor-texto-secundario);
+            cursor: help;
+        }
+
+        .geo-tooltip img {
+            display: block;
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        .geo-tooltip__icone--escuro {
+            display: none !important;
+        }
+
+        :root[data-tema="escuro"] .geo-tooltip__icone--claro {
+            display: none !important;
+        }
+
+        :root[data-tema="escuro"] .geo-tooltip__icone--escuro {
+            display: block !important;
+        }
+
+        .geo-tooltip::after {
+            position: absolute;
+            right: 0;
+            bottom: calc(100% + 8px);
+            z-index: 60;
+            width: min(300px, calc(100vw - 32px));
+            padding: var(--espaco-3);
+            border: 1px solid var(--cor-borda);
+            border-radius: var(--raio-medio);
+            background: var(--leitura-fundo);
+            color: var(--cor-texto-principal);
+            box-shadow: var(--sombra-painel);
+            font-size: var(--tamanho-texto-pequeno);
+            line-height: 1.35;
+            content: attr(data-tooltip);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(4px);
+            transition: opacity 160ms ease, transform 160ms ease;
+        }
+
+        .geo-tooltip:hover::after,
+        .geo-tooltip:focus-visible::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cadastro-resumo {
+            display: grid;
+            gap: var(--espaco-3);
+            margin-top: var(--espaco-4);
+        }
+
+        .cadastro-resumo__item {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: baseline;
+            gap: var(--espaco-3);
+            padding: var(--espaco-3);
+            border: 1px solid var(--cor-borda);
+            border-left: 3px solid var(--cor-institucional);
+            border-radius: var(--raio-medio);
+            background: var(--leitura-fundo);
+        }
+
+        .cadastro-resumo__item--pendente {
+            border-left-color: var(--cor-marca);
+        }
+
+        .cadastro-resumo__rotulo {
+            color: var(--cor-texto-secundario);
+            font-size: var(--tamanho-texto-pequeno);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .cadastro-resumo__valor {
+            color: var(--cor-texto-principal);
+            font-size: 18px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .cadastro-resumo__percentual {
+            color: var(--cor-texto-secundario);
+            font-size: var(--tamanho-texto-pequeno);
+            font-weight: 600;
+        }
+
         .rodape-corporativo {
             display: flex;
             align-items: center;
@@ -1194,12 +1297,30 @@
                         <div class="flex items-center justify-between mb-4">
                             <div>
                                 <h3 class="font-bold text-slate-100">Cadastro de Imóveis</h3>
-                                <p class="text-xs text-slate-200">Com cadastro quando `nm_proprietario_espelho` está preenchido</p>
                             </div>
-                            <span class="text-xs bg-brand-500/10 text-brand-500 font-semibold px-2.5 py-1 rounded-lg border border-brand-500/25">Imóveis</span>
+                            <button class="geo-tooltip" type="button" aria-label="Critério do cadastro de imóveis" data-tooltip="Imóvel com cadastro: registro com nome do proprietário preenchido. Imóvel não cadastrado: registro sem nome de proprietário informado.">
+                                <img class="geo-tooltip__icone--claro" src="assets/icons/icone1_pretim.svg" alt="" aria-hidden="true" />
+                                <img class="geo-tooltip__icone--escuro" src="assets/icons/icone2_branco.svg" alt="" aria-hidden="true" />
+                            </button>
                         </div>
                         <div class="flex-1 min-h-[300px] flex items-center justify-center relative">
                             <canvas id="chart-cadastro-status"></canvas>
+                        </div>
+                        <div class="cadastro-resumo" aria-label="Resumo do cadastro de imóveis">
+                            <div class="cadastro-resumo__item">
+                                <span class="cadastro-resumo__rotulo">Imóveis com cadastro</span>
+                                <span class="cadastro-resumo__valor">
+                                    <span id="cadastro-com-numero">10.216</span>
+                                    <span class="cadastro-resumo__percentual" id="cadastro-com-percentual">69,85%</span>
+                                </span>
+                            </div>
+                            <div class="cadastro-resumo__item cadastro-resumo__item--pendente">
+                                <span class="cadastro-resumo__rotulo">Imóveis não cadastrados</span>
+                                <span class="cadastro-resumo__valor">
+                                    <span id="cadastro-sem-numero">4.409</span>
+                                    <span class="cadastro-resumo__percentual" id="cadastro-sem-percentual">30,15%</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -1583,6 +1704,24 @@
                 `;
                 listContainer.insertAdjacentHTML('beforeend', userHtml);
             });
+        }
+
+        function renderizarResumoCadastro() {
+            const comCadastro = dbData.lotes_cadastro_status.com_cadastro;
+            const semCadastro = dbData.lotes_cadastro_status.sem_cadastro;
+            const total = comCadastro + semCadastro;
+            const percentualCom = total ? (comCadastro / total) * 100 : 0;
+            const percentualSem = total ? (semCadastro / total) * 100 : 0;
+
+            const numeroCom = document.getElementById('cadastro-com-numero');
+            const numeroSem = document.getElementById('cadastro-sem-numero');
+            const percentualComEl = document.getElementById('cadastro-com-percentual');
+            const percentualSemEl = document.getElementById('cadastro-sem-percentual');
+
+            if (numeroCom) numeroCom.textContent = comCadastro.toLocaleString('pt-BR');
+            if (numeroSem) numeroSem.textContent = semCadastro.toLocaleString('pt-BR');
+            if (percentualComEl) percentualComEl.textContent = percentualCom.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+            if (percentualSemEl) percentualSemEl.textContent = percentualSem.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
         }
 
         function inicializarGraficos() {
@@ -1982,6 +2121,7 @@
             predefinirTema();
             inicializarGraficos();
             renderizarRankingUsuarios();
+            renderizarResumoCadastro();
             inicializarMapa();
 
             const menu = document.querySelector('.menu');
