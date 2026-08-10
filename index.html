@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeoPainel - Dashboard Gerencial</title>
     <meta name="description" content="Dashboard gerencial do cadastro imobiliário e geocadastro baseado no banco de dados do Supabase.">
+    <script>
+        (function () {
+            "use strict";
+            try {
+                var modoSalvo = window.localStorage.getItem("eskriba-tema") || "automatico";
+                var prefereEscuro = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+                var deveSerEscuro = modoSalvo === "escuro" || (modoSalvo === "automatico" && prefereEscuro);
+                document.documentElement.setAttribute("data-tema", deveSerEscuro ? "escuro" : "claro");
+            } catch (erro) {
+                document.documentElement.setAttribute("data-tema", "claro");
+            }
+        })();
+    </script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,6 +70,7 @@
     </script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0,0" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- MapLibre GL JS CSS & JS -->
@@ -102,10 +116,32 @@
 
             /* Fundo topográfico (Escriba F3-02) */
             --topografico-fundo: #ffffff;
-            --topografico-linha: rgba(34, 91, 53, 0.15);
-            --topografico-linha-mestra: rgba(34, 89, 54, 0.3);
+            --topografico-linha: rgba(34, 91, 53, 0.22);
+            --topografico-linha-mestra: rgba(34, 89, 54, 0.42);
+
+            --espaco-1: 4px;
+            --espaco-2: 8px;
+            --espaco-3: 12px;
+            --espaco-4: 16px;
+            --espaco-5: 24px;
+            --espaco-6: 32px;
+            --espaco-7: 48px;
+            --raio-pequeno: 4px;
+            --raio-medio: 8px;
+            --raio-grande: 8px;
+            --fonte-base: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+            --tamanho-texto-base: 15px;
+            --tamanho-texto-pequeno: 13px;
+            --tamanho-texto-titulo: 20px;
+            --menu-largura-recolhido: 60px;
+            --menu-largura-expandido: 220px;
+            --menu-transicao: 200ms ease;
+            --topo-altura: 64px;
+            --foco-cor: #b84d1e;
+            --foco-contorno: 2px solid var(--foco-cor);
+            --foco-deslocamento: 2px;
             
-            --tema-transicao: 350ms ease;
+            --tema-transicao: 400ms ease;
         }
 
         :root[data-tema="escuro"] {
@@ -134,20 +170,52 @@
 
             --painel-fundo: rgba(16, 28, 21, 0.68);
             --painel-fundo-forte: rgba(18, 34, 24, 0.92);
-            --painel-borda: rgba(143, 195, 158, 0.32);
-            --leitura-fundo: rgba(20, 39, 27, 0.92);
+            --painel-borda: rgba(143, 195, 158, 0.36);
+            --leitura-fundo: rgba(20, 39, 27, 0.94);
 
             --sombra-painel: 0 4px 24px rgba(0, 0, 0, 0.35);
+            --foco-cor: #f1b792;
 
             --topografico-fundo: #0f3d29;
-            --topografico-linha: rgba(255, 255, 255, 0.22);
-            --topografico-linha-mestra: rgba(255, 255, 255, 0.42);
+            --topografico-linha: rgba(255, 255, 255, 0.28);
+            --topografico-linha-mestra: rgba(255, 255, 255, 0.52);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
         }
 
         body {
+            margin: 0;
+            font-family: var(--fonte-base);
+            font-size: var(--tamanho-texto-base);
             background-color: var(--topografico-fundo);
             color: var(--cor-texto-principal);
             transition: background-color var(--tema-transicao), color var(--tema-transicao);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        [tabindex]:focus-visible {
+            outline: var(--foco-contorno);
+            outline-offset: var(--foco-deslocamento);
         }
 
         /* Topographic Canvas styling */
@@ -161,6 +229,587 @@
             pointer-events: none;
             background: var(--topografico-fundo);
             transition: background var(--tema-transicao);
+        }
+
+        .material-symbols-outlined {
+            font-family: "Material Symbols Outlined";
+            font-weight: normal;
+            font-style: normal;
+            font-size: 22px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: "liga";
+            -webkit-font-smoothing: antialiased;
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+
+        .eskriba-app {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: var(--menu-largura-recolhido) minmax(0, 1fr);
+            grid-template-rows: var(--topo-altura) 1fr;
+            grid-template-areas:
+                "topo topo"
+                "menu conteudo";
+            min-height: 100vh;
+            transition: grid-template-columns var(--menu-transicao);
+        }
+
+        .eskriba-app:has(.menu:hover),
+        .eskriba-app:has(.menu:focus-within),
+        .eskriba-app:has(.menu--fixado) {
+            grid-template-columns: var(--menu-largura-expandido) minmax(0, 1fr);
+        }
+
+        .topo {
+            grid-area: topo;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: var(--topo-altura);
+            padding: 0 var(--espaco-5);
+            background: var(--painel-fundo-forte);
+            border-bottom: 1px solid var(--cor-borda);
+            box-shadow: var(--sombra-painel);
+            transition: background-color var(--tema-transicao), border-color var(--tema-transicao);
+        }
+
+        .topo__marca {
+            display: flex;
+            align-items: center;
+            gap: var(--espaco-3);
+            text-decoration: none;
+            min-width: 0;
+        }
+
+        .topo__simbolo {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--raio-medio);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-texto-invertido);
+            background: var(--cor-institucional);
+            box-shadow: var(--sombra-painel);
+        }
+
+        .topo__titulo {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .topo__titulo strong {
+            color: var(--cor-texto-principal);
+            font-size: 18px;
+            line-height: 1.1;
+        }
+
+        .topo__titulo span {
+            color: var(--cor-texto-secundario);
+            font-size: var(--tamanho-texto-pequeno);
+        }
+
+        .topo__ferramentas {
+            display: flex;
+            align-items: center;
+            gap: var(--espaco-3);
+        }
+
+        .topo__status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--espaco-2);
+            min-height: 34px;
+            padding: 0 var(--espaco-3);
+            border: 1px solid var(--cor-borda);
+            border-radius: var(--raio-medio);
+            background: var(--leitura-fundo);
+            color: var(--cor-texto-secundario);
+            font-size: var(--tamanho-texto-pequeno);
+            font-weight: 600;
+        }
+
+        .topo__status-ponto {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cor-sucesso);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--cor-sucesso) 22%, transparent);
+        }
+
+        .topo__botao {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--raio-medio);
+            border: 1px solid var(--cor-borda);
+            background: var(--leitura-fundo);
+            color: var(--cor-texto-secundario);
+            cursor: pointer;
+            transition: background-color var(--tema-transicao), border-color var(--tema-transicao), color var(--tema-transicao);
+        }
+
+        .topo__botao:hover {
+            border-color: var(--cor-borda-forte);
+            color: var(--cor-marca-forte);
+        }
+
+        .menu {
+            grid-area: menu;
+            overflow: hidden;
+            background: var(--painel-fundo-forte);
+            border-right: 1px solid var(--cor-borda);
+            transition: background-color var(--tema-transicao), border-color var(--tema-transicao);
+            display: flex;
+            flex-direction: column;
+            padding: var(--espaco-2) 0;
+        }
+
+        .menu__lista,
+        .menu__rodape {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--espaco-1);
+        }
+
+        .menu__lista {
+            flex: 1 1 auto;
+        }
+
+        .menu__rodape {
+            flex: 0 0 auto;
+            border-top: 1px solid var(--cor-borda);
+            padding-top: var(--espaco-2);
+            margin-top: auto;
+        }
+
+        .menu__item {
+            display: flex;
+            align-items: center;
+            gap: var(--espaco-3);
+            width: 100%;
+            height: 44px;
+            padding: 0 calc((var(--menu-largura-recolhido) - 24px) / 2);
+            border: 0;
+            border-left: 3px solid transparent;
+            appearance: none;
+            background: transparent;
+            color: var(--cor-texto-secundario);
+            cursor: pointer;
+            font: inherit;
+            text-align: left;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background-color var(--tema-transicao), border-color var(--tema-transicao), color var(--tema-transicao);
+        }
+
+        .menu__item:hover {
+            color: var(--cor-marca-forte);
+            background: color-mix(in srgb, var(--cor-institucional) 8%, transparent);
+        }
+
+        .menu__item--ativo {
+            color: var(--cor-marca-forte);
+            border-left-color: var(--cor-marca);
+            background: color-mix(in srgb, var(--cor-institucional) 12%, transparent);
+            font-weight: 600;
+        }
+
+        .menu__icone {
+            flex: 0 0 24px;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .menu__texto {
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity var(--menu-transicao);
+        }
+
+        .eskriba-app:has(.menu:hover) .menu__texto,
+        .eskriba-app:has(.menu:focus-within) .menu__texto,
+        .eskriba-app:has(.menu--fixado) .menu__texto {
+            opacity: 1;
+        }
+
+        .menu__nome {
+            font-size: var(--tamanho-texto-base);
+        }
+
+        .menu__grupo {
+            padding: var(--espaco-3) calc((var(--menu-largura-recolhido) - 24px) / 2) var(--espaco-1);
+            margin-top: var(--espaco-2);
+            border-top: 1px solid var(--cor-borda);
+        }
+
+        .menu__grupo-nome {
+            display: block;
+            font-size: var(--tamanho-texto-pequeno);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--cor-marca);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity var(--menu-transicao);
+        }
+
+        .eskriba-app:has(.menu:hover) .menu__grupo-nome,
+        .eskriba-app:has(.menu:focus-within) .menu__grupo-nome,
+        .eskriba-app:has(.menu--fixado) .menu__grupo-nome {
+            opacity: 1;
+        }
+
+        .conteudo {
+            grid-area: conteudo;
+            min-width: 0;
+            padding: var(--espaco-5);
+            overflow-y: auto;
+        }
+
+        .pagina-cabecalho {
+            margin-bottom: var(--espaco-4);
+            color: var(--cor-texto-sobre-fundo);
+        }
+
+        .pagina-cabecalho h2 {
+            margin: 0 0 var(--espaco-1);
+            font-size: var(--tamanho-texto-titulo);
+            font-weight: 700;
+            letter-spacing: 0;
+        }
+
+        .pagina-cabecalho p {
+            margin: 0;
+            color: var(--cor-texto-secundario-sobre-fundo);
+        }
+
+        .ferramenta-identidade {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: var(--espaco-1) var(--espaco-2);
+            margin-bottom: var(--espaco-2);
+            font-size: var(--tamanho-texto-pequeno);
+        }
+
+        .ferramenta-identidade strong {
+            color: var(--cor-marca);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .ferramenta-identidade span {
+            color: var(--cor-texto-secundario-sobre-fundo);
+        }
+
+        .geo-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: var(--espaco-5);
+        }
+
+        .geo-grid {
+            display: grid;
+            gap: var(--espaco-4);
+        }
+
+        .geo-grid--metricas {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+
+        .geo-grid--duas {
+            grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+        }
+
+        .geo-grid--meio {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .geo-card,
+        .glass-card {
+            background: var(--painel-fundo);
+            backdrop-filter: blur(var(--painel-desfoque));
+            -webkit-backdrop-filter: blur(var(--painel-desfoque));
+            border: 1px solid var(--painel-borda);
+            border-radius: var(--raio-grande) !important;
+            box-shadow: var(--sombra-painel);
+            padding: var(--espaco-5) !important;
+            color: var(--cor-texto-principal);
+            transition: background-color var(--tema-transicao), border-color var(--tema-transicao), box-shadow var(--tema-transicao);
+        }
+
+        .glass-card:hover {
+            transform: none;
+            border-color: var(--cor-borda-forte);
+            box-shadow: var(--sombra-painel);
+        }
+
+        .geo-card__cabecalho {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: var(--espaco-3);
+            margin-bottom: var(--espaco-4);
+        }
+
+        .geo-card__cabecalho h3,
+        .glass-card h3 {
+            margin: 0;
+            color: var(--cor-texto-principal) !important;
+            font-size: var(--tamanho-texto-base);
+            font-weight: 700;
+        }
+
+        .geo-card__cabecalho p,
+        .glass-card p {
+            color: var(--cor-texto-secundario) !important;
+        }
+
+        .geo-selo {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--espaco-1);
+            padding: 2px var(--espaco-2);
+            border-radius: 999px;
+            border: 1px solid var(--cor-borda);
+            background: color-mix(in srgb, var(--cor-institucional) 10%, transparent);
+            color: var(--cor-institucional);
+            font-size: var(--tamanho-texto-pequeno);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .geo-metrica {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: var(--espaco-4);
+        }
+
+        .geo-metrica__rotulo,
+        .glass-card span[class*="uppercase"] {
+            color: var(--cor-texto-secundario) !important;
+            font-size: var(--tamanho-texto-pequeno) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .geo-metrica__numero,
+        .glass-card [id^="stat-"] {
+            color: var(--cor-institucional) !important;
+            font-size: 32px !important;
+            font-weight: 700 !important;
+            line-height: 1;
+        }
+
+        .geo-metrica__icone {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--raio-medio);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-institucional);
+            background: color-mix(in srgb, var(--cor-institucional) 12%, transparent);
+            border: 1px solid var(--cor-borda);
+        }
+
+        .geo-chart {
+            min-height: 300px;
+            height: 320px;
+        }
+
+        .geo-chart--mapa {
+            height: 450px;
+            border: 1px solid var(--cor-borda);
+            border-radius: var(--raio-grande);
+            overflow: hidden;
+            background: #090d16;
+        }
+
+        .geo-progresso {
+            display: flex;
+            flex-direction: column;
+            gap: var(--espaco-4);
+        }
+
+        .geo-progresso__linha {
+            display: grid;
+            gap: var(--espaco-2);
+        }
+
+        .geo-progresso__topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--espaco-3);
+            color: var(--cor-texto-principal);
+            font-size: var(--tamanho-texto-pequeno);
+        }
+
+        .geo-progresso__trilha {
+            height: 10px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--cor-institucional) 12%, transparent);
+            overflow: hidden;
+        }
+
+        .geo-progresso__barra {
+            display: block;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(to right, var(--cor-institucional), var(--cor-marca));
+        }
+
+        .geo-alertas {
+            display: flex;
+            flex-direction: column;
+            gap: var(--espaco-3);
+        }
+
+        .geo-alerta {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            gap: var(--espaco-3);
+            padding: var(--espaco-4);
+            border: 1px solid var(--cor-borda);
+            border-left: 3px solid var(--cor-marca);
+            border-radius: var(--raio-medio);
+            background: var(--leitura-fundo);
+        }
+
+        .geo-alerta--erro {
+            border-left-color: var(--cor-erro);
+        }
+
+        .geo-alerta--critico {
+            border-left-color: var(--cor-critico);
+        }
+
+        .geo-alerta--ok {
+            border-left-color: var(--cor-sucesso);
+        }
+
+        .geo-alerta h4 {
+            margin: 0;
+            color: var(--cor-texto-principal) !important;
+            font-size: var(--tamanho-texto-base);
+        }
+
+        .geo-alerta p {
+            margin: var(--espaco-1) 0 0;
+            font-size: var(--tamanho-texto-pequeno);
+        }
+
+        .geo-ranking {
+            display: flex;
+            flex-direction: column;
+            gap: var(--espaco-3);
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .geo-ranking__item {
+            display: grid;
+            gap: var(--espaco-2);
+        }
+
+        .geo-ranking__topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--espaco-3);
+            font-size: var(--tamanho-texto-pequeno);
+        }
+
+        .geo-ranking__usuario {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--espaco-2);
+            min-width: 0;
+            font-weight: 600;
+            color: var(--cor-texto-principal);
+        }
+
+        .geo-ranking__posicao {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1px solid var(--cor-borda);
+            color: var(--cor-institucional);
+            background: color-mix(in srgb, var(--cor-institucional) 10%, transparent);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .geo-ranking__valor {
+            white-space: nowrap;
+            color: var(--cor-texto-secundario);
+        }
+
+        .geo-ranking__trilha {
+            height: 7px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--cor-institucional) 12%, transparent);
+            overflow: hidden;
+        }
+
+        .geo-ranking__barra {
+            display: block;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(to right, var(--cor-institucional), var(--cor-marca));
+        }
+
+        .text-slate-100,
+        .text-slate-200,
+        .text-brand-500,
+        .text-emerald-500,
+        .text-amber-500,
+        .text-rose-500 {
+            color: inherit !important;
+        }
+
+        .bg-gradient-to-r,
+        .bg-gradient-to-tr {
+            background-image: none !important;
+        }
+
+        #infra-paving-bar,
+        #infra-water-bar,
+        #infra-electricity-bar,
+        #infra-sewage-bar,
+        #infra-sidewalk-bar,
+        #infra-trash-bar {
+            background: linear-gradient(to right, var(--cor-institucional), var(--cor-marca)) !important;
         }
 
         /* Custom scrollbar */
@@ -232,107 +881,181 @@
             transform: scale(1.25);
             background-color: var(--cor-institucional);
         }
+
+        @media (max-width: 1100px) {
+            .geo-grid--duas,
+            .geo-grid--meio {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .eskriba-app,
+            .eskriba-app:has(.menu:hover),
+            .eskriba-app:has(.menu:focus-within),
+            .eskriba-app:has(.menu--fixado) {
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--topo-altura) auto 1fr;
+                grid-template-areas:
+                    "topo"
+                    "menu"
+                    "conteudo";
+            }
+
+            .topo {
+                padding: 0 var(--espaco-3);
+            }
+
+            .topo__status {
+                display: none;
+            }
+
+            .menu {
+                border-right: 0;
+                border-bottom: 1px solid var(--cor-borda);
+                overflow-x: auto;
+                padding: var(--espaco-2);
+            }
+
+            .menu__lista,
+            .menu__rodape {
+                flex-direction: row;
+                width: max-content;
+            }
+
+            .menu__rodape,
+            .menu__grupo {
+                display: none;
+            }
+
+            .menu__item {
+                width: auto;
+                padding: 0 var(--espaco-3);
+                border-left: 0;
+                border-bottom: 3px solid transparent;
+            }
+
+            .menu__item--ativo {
+                border-bottom-color: var(--cor-marca);
+            }
+
+            .menu__texto {
+                opacity: 1;
+            }
+
+            .conteudo {
+                padding: var(--espaco-4);
+            }
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+<body>
 
     <!-- Fundo Topografico (Canvas Animado do Escriba) -->
     <canvas data-fundo-topografico class="fundo-topografico"></canvas>
 
     <!-- Content Wrapper positioned on top of canvas -->
-    <div class="relative z-10 flex-1 flex flex-col min-h-screen">
+    <div class="eskriba-app">
         
         <!-- Header / Top Bar -->
-        <header class="glass-panel sticky top-0 z-40 border-b py-4 px-6 flex items-center justify-between glow-border">
-            <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-500 to-emerald-500 flex items-center justify-center shadow-md">
-                    <i class="fa-solid fa-map-location-dot text-lg text-white"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold tracking-tight text-slate-100 flex items-center gap-2">
-                        GeoPainel <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-500 border border-brand-500/20">Acaraú</span>
-                    </h1>
-                    <p class="text-xs text-slate-200">Dashboard Gerencial do Cadastro Imobiliário</p>
-                </div>
-            </div>
+        <header class="topo" role="banner">
+            <a class="topo__marca" href="#geral" aria-label="GeoCity - página inicial">
+                <span class="topo__simbolo" aria-hidden="true">
+                    <span class="material-symbols-outlined">map</span>
+                </span>
+                <span class="topo__titulo">
+                    <strong>GeoCity</strong>
+                    <span>Dashboard Gerencial do Cadastro Imobiliário</span>
+                </span>
+            </a>
             
-            <div class="flex items-center gap-3">
+            <div class="topo__ferramentas">
                 <!-- Connection Badge -->
-                <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-medium">
-                    <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <div class="topo__status">
+                    <span class="topo__status-ponto" aria-hidden="true"></span>
                     <span>Supabase Conectado</span>
                 </div>
 
                 <!-- Theme Switcher Button -->
-                <button id="btn-tema" onclick="toggleTema();" class="p-2.5 rounded-lg bg-slate-50/5 hover:bg-slate-50/10 border border-slate-800 hover:border-brand-500 text-slate-200 hover:text-brand-500 transition-colors duration-200" title="Alternar Tema">
-                    <i class="fa-solid fa-circle-half-stroke"></i>
+                <button id="btn-tema" onclick="toggleTema();" class="topo__botao" title="Alternar tema" aria-label="Alternar tema">
+                    <span class="material-symbols-outlined" aria-hidden="true">brightness_auto</span>
                 </button>
                 
-                <button onclick="window.location.reload();" class="p-2.5 rounded-lg bg-slate-50/5 hover:bg-slate-50/10 border border-slate-800 hover:border-brand-500 text-slate-200 hover:text-brand-500 transition-colors duration-200" title="Recarregar Dados">
-                    <i class="fa-solid fa-arrows-rotate"></i>
+                <button onclick="window.location.reload();" class="topo__botao" title="Recarregar dados" aria-label="Recarregar dados">
+                    <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
                 </button>
             </div>
         </header>
 
-        <!-- Main Content Layout -->
-        <div class="flex-1 flex flex-col lg:flex-row min-h-0">
-            
-            <!-- Sidebar Navigation -->
-            <aside class="w-full lg:w-64 border-b lg:border-b-0 lg:border-r border-slate-800 glass-panel p-4 flex flex-col gap-2">
-                <span class="text-[10px] font-bold text-slate-200 tracking-wider uppercase px-3 py-1">Navegação</span>
-                
-                <a href="#geral" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-500/10 text-brand-500 border border-brand-500/25 font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-chart-pie w-5 text-center"></i>
-                    <span>Visão Geral</span>
-                </a>
-                <a href="#cadastro-timeline-section" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-200 hover:text-brand-500 hover:bg-slate-50/5 border border-transparent hover:border-slate-800 font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-timeline w-5 text-center"></i>
-                    <span>Histórico de Atividade</span>
-                </a>
-                <a href="#infra" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-200 hover:text-brand-500 hover:bg-slate-50/5 border border-transparent hover:border-slate-800 font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-droplet w-5 text-center"></i>
-                    <span>Infraestrutura</span>
-                </a>
-                <a href="#qualidade" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-200 hover:text-brand-500 hover:bg-slate-50/5 border border-transparent hover:border-slate-800 font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i>
-                    <span>Consistência</span>
-                </a>
-                <a href="#mapa-section" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-200 hover:text-brand-500 hover:bg-slate-50/5 border border-transparent hover:border-slate-800 font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-earth-americas w-5 text-center"></i>
-                    <span>Visualização Espacial</span>
-                </a>
-
-                <div class="mt-auto pt-4 border-t border-slate-800 flex flex-col gap-2">
-                    <div class="p-3.5 rounded-xl bg-slate-50/5 border border-slate-800 text-xs text-slate-200">
-                        <div class="font-semibold text-slate-100 mb-1">Banco de Dados</div>
-                        <div class="truncate text-[10px] text-slate-200">db.worhcdypkjzrphxqtija.supabase.co</div>
-                        <div class="flex items-center gap-1.5 mt-2 text-[10px] text-brand-500 font-medium">
-                            <i class="fa-solid fa-database"></i> PostgreSQL 15+
-                        </div>
-                    </div>
-                </div>
-            </aside>
+        <!-- Sidebar Navigation -->
+        <nav class="menu" aria-label="Menu principal">
+            <button type="button" class="menu__item" data-menu-fixar aria-pressed="false" title="Fixar menu expandido">
+                <span class="menu__icone material-symbols-outlined" aria-hidden="true">menu</span>
+                <span class="menu__texto"><span class="menu__nome">Fixar menu</span></span>
+            </button>
+            <ul class="menu__lista">
+                <li>
+                    <a href="#geral" class="menu__item menu__item--ativo" aria-current="page">
+                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">dashboard</span>
+                        <span class="menu__texto"><span class="menu__nome">Visão Geral</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#cadastro-timeline-section" class="menu__item">
+                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">timeline</span>
+                        <span class="menu__texto"><span class="menu__nome">Histórico</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#infra" class="menu__item">
+                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">water_drop</span>
+                        <span class="menu__texto"><span class="menu__nome">Infraestrutura</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#qualidade" class="menu__item">
+                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">fact_check</span>
+                        <span class="menu__texto"><span class="menu__nome">Consistência</span></span>
+                    </a>
+                </li>
+                <li class="menu__grupo"><span class="menu__grupo-nome">GEOconnect</span></li>
+                <li>
+                    <a href="#mapa-section" class="menu__item">
+                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">travel_explore</span>
+                        <span class="menu__texto"><span class="menu__nome">Mapa SIG</span></span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="menu__rodape">
+                <li>
+                    <a href="#mapa-section" class="menu__item" title="Banco PostGIS">
+                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">database</span>
+                        <span class="menu__texto"><span class="menu__nome">PostgreSQL 15+</span></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
             <!-- Dashboard Panel -->
-            <main class="flex-1 p-6 overflow-y-auto space-y-6">
+            <main class="conteudo geo-dashboard">
                 
                 <!-- Welcome Bar -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <section class="pagina-cabecalho" id="geral">
+                    <div class="ferramenta-identidade">
+                        <strong>GEOconnect</strong>
+                        <span>— uma ferramenta Precision+</span>
+                    </div>
                     <div>
                         <h2 class="text-2xl font-bold tracking-tight text-slate-100">Indicadores de Cadastro Territorial</h2>
                         <p class="text-sm text-slate-200">Dados reais consolidados do banco geocadastral.</p>
                     </div>
-                    <div class="text-xs text-slate-200 bg-slate-50/5 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2">
-                        <i class="fa-regular fa-calendar-days text-brand-500"></i>
-                        <span>Última atualização automática hoje</span>
-                    </div>
-                </div>
+                </section>
 
                 <!-- Stats Overview Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="geral">
+                <div class="geo-grid geo-grid--metricas">
                     
                     <!-- Card 1: Lotes -->
-                    <div class="glass-card rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
+                    <div class="glass-card geo-metrica rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
                         <div class="space-y-1 z-10">
                             <span class="text-xs font-semibold text-slate-200 uppercase tracking-wider">Total de Lotes</span>
                             <div class="text-3xl font-bold text-slate-100" id="stat-lotes">14.625</div>
@@ -346,7 +1069,7 @@
                     </div>
 
                     <!-- Card 2: Edificações -->
-                    <div class="glass-card rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
+                    <div class="glass-card geo-metrica rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
                         <div class="space-y-1 z-10">
                             <span class="text-xs font-semibold text-slate-200 uppercase tracking-wider">Edificações</span>
                             <div class="text-3xl font-bold text-slate-100" id="stat-edificacoes">13.728</div>
@@ -360,7 +1083,7 @@
                     </div>
 
                     <!-- Card 3: Proprietários -->
-                    <div class="glass-card rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
+                    <div class="glass-card geo-metrica rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
                         <div class="space-y-1 z-10">
                             <span class="text-xs font-semibold text-slate-200 uppercase tracking-wider">Proprietários</span>
                             <div class="text-3xl font-bold text-slate-100" id="stat-proprietarios">10.122</div>
@@ -374,7 +1097,7 @@
                     </div>
 
                     <!-- Card 4: Logradouros -->
-                    <div class="glass-card rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
+                    <div class="glass-card geo-metrica rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
                         <div class="space-y-1 z-10">
                             <span class="text-xs font-semibold text-slate-200 uppercase tracking-wider">Logradouros e Bairros</span>
                             <div class="text-3xl font-bold text-slate-100 flex items-baseline gap-1.5">
@@ -393,7 +1116,7 @@
                 </div>
 
                 <!-- Charts Section 1: Bairros & Status de Registro -->
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div class="geo-grid geo-grid--duas">
                     
                     <!-- Bairros Chart (Left) -->
                     <div class="glass-card rounded-2xl p-5 xl:col-span-2 flex flex-col">
@@ -426,7 +1149,7 @@
                 </div>
 
                 <!-- NEW Section 2: Timeline de Cadastro por Usuário & Ranking de Usuários -->
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6" id="cadastro-timeline-section">
+                <div class="geo-grid geo-grid--duas" id="cadastro-timeline-section">
                     
                     <!-- Daily timeline chart (Left 2/3) -->
                     <div class="glass-card rounded-2xl p-5 xl:col-span-2 flex flex-col">
@@ -452,7 +1175,7 @@
                             <span class="text-xs bg-brand-500/10 text-brand-500 font-semibold px-2.5 py-1 rounded-lg border border-brand-500/25">Ranking</span>
                         </div>
                         
-                        <div class="flex-1 flex flex-col justify-start space-y-4 pt-2 overflow-y-auto max-h-[320px] pr-1" id="ranking-usuarios-list">
+                        <div class="geo-ranking" id="ranking-usuarios-list">
                             <!-- JS will inject rankings here -->
                         </div>
                     </div>
@@ -460,7 +1183,7 @@
                 </div>
 
                 <!-- Infrastructure & Integrity Row -->
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="infra">
+                <div class="geo-grid geo-grid--meio" id="infra">
                     
                     <!-- Infrastructure Progress -->
                     <div class="glass-card rounded-2xl p-5 flex flex-col">
@@ -625,7 +1348,6 @@
                 </div>
 
             </main>
-        </div>
     </div>
 
     <!-- Script Block containing raw data and logic -->
@@ -701,38 +1423,61 @@
         let map = null;
         let tileLayer = null;
 
-        // Theme switching logic
-        function toggleTema() {
-            const currentTheme = document.documentElement.getAttribute('data-tema') || 'escuro';
-            const newTheme = currentTheme === 'escuro' ? 'claro' : 'escuro';
-            document.documentElement.setAttribute('data-tema', newTheme);
-            localStorage.setItem('tema', newTheme);
-            
-            // Dispatch theme changed event (Escriba F3-02 trigger)
-            document.dispatchEvent(new CustomEvent('eskriba:tema-alterado'));
-            
+        const MODOS_TEMA = ['automatico', 'claro', 'escuro'];
+        const ROTULOS_TEMA = {
+            automatico: { icone: 'brightness_auto', rotulo: 'Automático (segue o sistema)' },
+            claro: { icone: 'light_mode', rotulo: 'Claro' },
+            escuro: { icone: 'dark_mode', rotulo: 'Escuro' }
+        };
+        let modoTemaAtual = 'automatico';
+
+        function sistemaPrefereEscuro() {
+            return Boolean(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+
+        function resolverTemaEfetivo(modo) {
+            if (modo === 'escuro') return 'escuro';
+            if (modo === 'claro') return 'claro';
+            return sistemaPrefereEscuro() ? 'escuro' : 'claro';
+        }
+
+        function aplicarTema(modo) {
+            modoTemaAtual = MODOS_TEMA.includes(modo) ? modo : 'automatico';
+            const temaEfetivo = resolverTemaEfetivo(modoTemaAtual);
+            document.documentElement.setAttribute('data-tema', temaEfetivo);
             atualizarIconeTema();
+            document.dispatchEvent(new CustomEvent('eskriba:tema-alterado'));
             atualizarGraficos();
             atualizarMapaTile();
         }
 
+        function toggleTema() {
+            const indiceAtual = MODOS_TEMA.indexOf(modoTemaAtual);
+            const proximoModo = MODOS_TEMA[(indiceAtual + 1) % MODOS_TEMA.length];
+            try {
+                localStorage.setItem('eskriba-tema', proximoModo);
+            } catch (erro) {}
+            aplicarTema(proximoModo);
+        }
+
         function predefinirTema() {
-            const savedTheme = localStorage.getItem('tema') || 'escuro';
-            document.documentElement.setAttribute('data-tema', savedTheme);
-            atualizarIconeTema();
+            let modoSalvo = 'automatico';
+            try {
+                modoSalvo = localStorage.getItem('eskriba-tema') || 'automatico';
+            } catch (erro) {}
+            aplicarTema(modoSalvo);
         }
 
         function atualizarIconeTema() {
-            const tema = document.documentElement.getAttribute('data-tema') || 'escuro';
             const btn = document.getElementById('btn-tema');
             if (!btn) return;
-            if (tema === 'escuro') {
-                btn.innerHTML = '<i class="fa-solid fa-sun text-amber-500"></i>';
-                btn.title = "Alternar para Tema Claro";
-            } else {
-                btn.innerHTML = '<i class="fa-solid fa-moon text-indigo-500"></i>';
-                btn.title = "Alternar para Tema Escuro";
-            }
+            const info = ROTULOS_TEMA[modoTemaAtual] || ROTULOS_TEMA.automatico;
+            const proximoModo = MODOS_TEMA[(MODOS_TEMA.indexOf(modoTemaAtual) + 1) % MODOS_TEMA.length];
+            const proximo = ROTULOS_TEMA[proximoModo];
+            btn.innerHTML = `<span class="material-symbols-outlined" aria-hidden="true">${info.icone}</span>`;
+            const texto = `Tema: ${info.rotulo}. Toque para mudar para ${proximo.rotulo}.`;
+            btn.title = texto;
+            btn.setAttribute('aria-label', texto);
         }
 
         function getThemeColors() {
@@ -756,30 +1501,20 @@
             
             dbData.lotes_por_usuario.forEach((userEntry, idx) => {
                 const pct = ((userEntry.count / total) * 100).toFixed(2);
-                
-                // Color badges depending on place
-                let badgeClass = "bg-slate-500/10 text-slate-400";
-                if (idx === 0) badgeClass = "bg-brand-500/10 text-brand-500 border border-brand-500/25";
-                if (idx === 1) badgeClass = "bg-emerald-500/10 text-emerald-500 border border-emerald-500/25";
-                if (idx === 2) badgeClass = "bg-purple-500/10 text-purple-500 border border-purple-500/25";
-                
                 const userHtml = `
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2">
-                                <span class="h-5 w-5 rounded-full flex items-center justify-center font-bold text-[10px] ${badgeClass}">
-                                    ${idx + 1}
-                                </span>
-                                <span class="font-semibold text-slate-100 font-sans">${userEntry.usuario}</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="font-bold text-slate-100">${userEntry.count.toLocaleString('pt-BR')}</span>
-                                <span class="text-slate-200 text-[10px] ml-1">(${pct}%)</span>
-                            </div>
+                    <div class="geo-ranking__item">
+                        <div class="geo-ranking__topo">
+                            <span class="geo-ranking__usuario">
+                                <span class="geo-ranking__posicao">${idx + 1}</span>
+                                <span>${userEntry.usuario}</span>
+                            </span>
+                            <span class="geo-ranking__valor">
+                                <strong>${userEntry.count.toLocaleString('pt-BR')}</strong> · ${pct}%
+                            </span>
                         </div>
-                        <div class="w-full bg-slate-50/5 rounded-full h-1.5">
-                            <div class="bg-gradient-to-r from-brand-500 to-emerald-500 h-1.5 rounded-full" style="width: ${pct}%"></div>
-                        </div>
+                        <span class="geo-ranking__trilha" aria-hidden="true">
+                            <span class="geo-ranking__barra" style="width: ${pct}%"></span>
+                        </span>
                     </div>
                 `;
                 listContainer.insertAdjacentHTML('beforeend', userHtml);
@@ -1184,6 +1919,27 @@
             inicializarGraficos();
             renderizarRankingUsuarios();
             inicializarMapa();
+
+            const menu = document.querySelector('.menu');
+            const botaoFixar = document.querySelector('[data-menu-fixar]');
+            if (menu && botaoFixar) {
+                botaoFixar.addEventListener('click', function () {
+                    const fixado = menu.classList.toggle('menu--fixado');
+                    botaoFixar.setAttribute('aria-pressed', fixado ? 'true' : 'false');
+                });
+            }
+
+            if (window.matchMedia) {
+                const consultaEscuro = window.matchMedia('(prefers-color-scheme: dark)');
+                const aoMudarPreferenciaDoSistema = function () {
+                    if (modoTemaAtual === 'automatico') aplicarTema('automatico');
+                };
+                if (consultaEscuro.addEventListener) {
+                    consultaEscuro.addEventListener('change', aoMudarPreferenciaDoSistema);
+                } else if (consultaEscuro.addListener) {
+                    consultaEscuro.addListener(aoMudarPreferenciaDoSistema);
+                }
+            }
         });
     </script>
 
@@ -1297,7 +2053,7 @@
                 var distancia = Math.sqrt(dx * dx + dy * dy);
                 if (distancia < CONFIGURACAO.raioCursor) {
                   var influencia = 1 - distancia / CONFIGURACAO.raioCursor;
-                  valor += Math.sin(influencia * Math.PI) * CONFIGURACAO.intensidadeCursor * cursor.active;
+                  valor += Math.sin(influencia * Math.PI) * CONFIGURACAO.intensidadeCursor * cursor.ativo;
                 }
               }
               return valor;
