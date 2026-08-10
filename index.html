@@ -1704,6 +1704,19 @@
                     }
           ]
 };
+
+        let chartBairros = null;
+        let chartCadastro = null;
+        let chartTimeline = null;
+        let map = null;
+        let tileLayer = null;
+
+        const MODOS_TEMA = ['automatico', 'claro', 'escuro'];
+        const ROTULOS_TEMA = {
+            automatico: { icone: 'brightness_auto', rotulo: 'Automático (segue o sistema)' },
+            claro: { icone: 'light_mode', rotulo: 'Claro' },
+            escuro: { icone: 'dark_mode', rotulo: 'Escuro' }
+        };
         let modoTemaAtual = 'automatico';
 
         function sistemaPrefereEscuro() {
