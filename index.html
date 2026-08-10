@@ -1961,34 +1961,60 @@
                 });
             });
 
-            const userColors = {
-                'Tiago': 'var(--cor-marca)',
-                'Erivan Rocha': 'var(--cor-institucional)',
-                'Bruno': '#ec4899',
-                'Rene Freitas': '#f59e0b',
-                'Não Informado': '#64748b'
+            // Paleta estrita solicitada: Vermelho, Azul, Amarelo, Verde, Laranja, Roxo, Preto, Cinza, Rosa
+            const CORES_PERMITIDAS = [
+                '#3b82f6', // Azul
+                '#10b981', // Verde
+                '#f97316', // Laranja
+                '#ec4899', // Rosa
+                '#94a3b8', // Cinza
+                '#ef4444', // Vermelho
+                '#eab308', // Amarelo
+                '#a855f7', // Roxo
+                '#1e293b'  // Preto
+            ];
+
+            const mapaCoresFixo = {
+                'Tiago': '#3b82f6',         // Azul
+                'Erivan Rocha': '#10b981',  // Verde
+                'Rene Freitas': '#f97316',  // Laranja
+                'Bruno': '#ec4899',         // Rosa
+                'Não Informado': '#94a3b8'  // Cinza
             };
 
             const timelineLabels = dbData.lotes_por_dia_timeline.map(entry => {
                 const parts = entry.data.split('-');
-                if (parts.length === 3) return `${parts[2]}/${parts[1]}`; // DD/MM format
+                if (parts.length === 3) return `${parts[2]}/${parts[1]}`; // Formato DD/MM
                 return entry.data;
             });
+
+            let corIndex = 0;
+            const coresAtribuidas = {};
 
             const datasets = Array.from(uniqueUsers)
                 .map(usr => {
                     const dataPoints = dbData.lotes_por_dia_timeline.map(entry => entry[usr] || 0);
                     const totalUpdates = dataPoints.reduce((a, b) => a + b, 0);
-                    const color = userColors[usr] || '#3b66ff';
+                    
+                    let color = mapaCoresFixo[usr];
+                    if (!color) {
+                        while (corIndex < CORES_PERMITIDAS.length && Object.values(coresAtribuidas).includes(CORES_PERMITIDAS[corIndex])) {
+                            corIndex++;
+                        }
+                        color = CORES_PERMITIDAS[corIndex % CORES_PERMITIDAS.length];
+                        corIndex++;
+                    }
+                    coresAtribuidas[usr] = color;
+
                     return {
                         label: usr,
                         data: dataPoints,
                         totalUpdates: totalUpdates,
                         borderColor: color,
                         backgroundColor: color + '15',
-                        borderWidth: 2,
-                        pointRadius: (ctx) => (ctx.raw > 0 ? 4 : 0),
-                        pointHoverRadius: (ctx) => (ctx.raw > 0 ? 6 : 0),
+                        borderWidth: 2.5,
+                        pointRadius: (ctx) => (ctx.raw > 0 ? 4.5 : 0),
+                        pointHoverRadius: (ctx) => (ctx.raw > 0 ? 7 : 0),
                         tension: 0.25,
                         fill: false
                     };
