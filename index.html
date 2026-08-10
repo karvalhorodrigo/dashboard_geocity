@@ -1213,7 +1213,6 @@
                     </div>
                     <div>
                         <h2 class="text-2xl font-bold tracking-tight text-slate-100">Indicadores de Cadastro Territorial</h2>
-                        <p class="text-sm text-slate-200">Dados reais consolidados do banco geocadastral.</p>
                     </div>
                 </section>
 
@@ -1679,16 +1678,38 @@
             };
         }
 
+        function quebrarRotuloGrafico(texto, limite = 18) {
+            const palavras = String(texto).split(' ');
+            const linhas = [];
+            let linhaAtual = '';
+
+            palavras.forEach((palavra) => {
+                const tentativa = linhaAtual ? `${linhaAtual} ${palavra}` : palavra;
+                if (tentativa.length > limite && linhaAtual) {
+                    linhas.push(linhaAtual);
+                    linhaAtual = palavra;
+                } else {
+                    linhaAtual = tentativa;
+                }
+            });
+
+            if (linhaAtual) linhas.push(linhaAtual);
+            return linhas;
+        }
+
         function renderizarRankingUsuarios() {
             const listContainer = document.getElementById('ranking-usuarios-list');
             if (!listContainer) return;
             
             listContainer.innerHTML = '';
             
-            const total = dbData.total_lotes;
+            const usuariosRanking = dbData.lotes_por_usuario.filter((userEntry) => (
+                userEntry.usuario.toLowerCase() !== 'postgres'
+            ));
+            const total = usuariosRanking.reduce((soma, userEntry) => soma + userEntry.count, 0);
             
-            dbData.lotes_por_usuario.forEach((userEntry, idx) => {
-                const pct = ((userEntry.count / total) * 100).toFixed(2);
+            usuariosRanking.forEach((userEntry, idx) => {
+                const pct = total ? ((userEntry.count / total) * 100).toFixed(2) : '0.00';
                 const userHtml = `
                     <div class="geo-ranking__item">
                         <div class="geo-ranking__topo">
@@ -1735,7 +1756,7 @@
             chartBairros = new Chart(ctxBairros, {
                 type: 'bar',
                 data: {
-                    labels: dbData.top_bairros.map(item => item.bairro),
+                    labels: dbData.top_bairros.map(item => quebrarRotuloGrafico(item.bairro)),
                     datasets: [{
                         label: 'Lotes Cadastrados',
                         data: dbData.top_bairros.map(item => item.count),
@@ -1760,7 +1781,13 @@
                             bodyColor: '#173322',
                             borderColor: 'var(--cor-borda)',
                             borderWidth: 1,
-                            padding: 10
+                            padding: 10,
+                            callbacks: {
+                                title: (items) => {
+                                    const label = items[0]?.label || '';
+                                    return Array.isArray(label) ? label.join(' ') : label;
+                                }
+                            }
                         }
                     },
                     scales: {
@@ -1770,7 +1797,11 @@
                         },
                         y: {
                             grid: { display: false },
-                            ticks: { color: colors.textoPrincipal, font: { family: 'Outfit', weight: 'medium' } }
+                            ticks: {
+                                color: colors.textoPrincipal,
+                                autoSkip: false,
+                                font: { family: 'Outfit', weight: 'medium' }
+                            }
                         }
                     }
                 }
