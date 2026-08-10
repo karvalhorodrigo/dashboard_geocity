@@ -32,16 +32,20 @@ O arquivo [`dashboard_gerencial.html`](file:///c:/Users/RodrigoC/Downloads/reuuu
     *   Substituiu o antigo gráfico de uso.
     *   **Métrica**: Definimos como **"Com Cadastro"** os lotes que possuem o nome do proprietário (`nm_proprietario_espelho`) preenchido no banco de dados.
     *   **Resultado**: **10.216 lotes** (69.85%) estão cadastrados e **4.409 lotes** (30.15%) constam sem cadastro.
-2.  **Lotes Adicionados por Usuário**:
-    *   Lista de ranking de usuários baseada na coluna `usr_criado`.
-    *   **postgres**: `14.566` lotes cadastrados.
-    *   **tiago_topogeo**: `6` lotes cadastrados.
-    *   **eriva_topogeo**: `1` lote cadastrado.
-    *   **TIAGO_003**: `1` lote cadastrado.
-    *   *Sem informação de usuário*: `51` lotes.
-3.  **Lotes Adicionados por Usuário por Dia**:
-    *   Gráfico de linha cronológico interativo (`chart-timeline`).
-    *   Exibe a contagem de lotes criados dia a dia para cada usuário ativo no banco (mostrando picos de cadastro no final de Julho por `tiago_topogeo` e cadastros em Agosto por `TIAGO_003`).
+2.  **Lotes por Usuário (Atualizações)**:
+    *   Lista de ranking de usuários baseada na coluna `usr_atualizado`.
+    *   **postgres**: `13.634` lotes atualizados.
+    *   **usuario_2_topogeo**: `771` lotes atualizados.
+    *   **tiago_topogeo**: `103` lotes atualizados.
+    *   **eriva_topogeo**: `58` lotes atualizados.
+    *   **TIAGO_003**: `42` lotes atualizados.
+    *   **RENE_FREITAS_002**: `9` lotes atualizados.
+    *   **ERIVAN_ROCHA_001**: `5` lotes atualizados.
+    *   **BRUNO_004**: `1` lote atualizado.
+    *   *Sem informação de usuário*: `4` lotes.
+3.  **Lotes por Usuário por Dia (Linha do Tempo)**:
+    *   Gráfico cronológico interativo (`chart-timeline`) baseado em `dt_atualizado` e `usr_atualizado`.
+    *   Exibe a contagem de lotes manipulados dia a dia para cada usuário ativo no banco, com paleta de cores exclusiva para cada cadastrante.
 
 ---
 

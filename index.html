@@ -1540,68 +1540,208 @@
     <script>
         // Database real records imported from consolidated queries
         const dbData = {
-          "total_lotes": 14625,
-          "total_edificacoes": 13728,
+          "total_lotes": 14627,
+          "total_edificacoes": 13720,
           "total_bairros": 24,
           "total_ruas": 548,
-          "total_proprietarios": 10122,
+          "total_proprietarios": 5128,
           "top_bairros": [
-            { "bairro": "Centro", "count": 1753 },
-            { "bairro": "Mongubas", "count": 1523 },
-            { "bairro": "Bailarina", "count": 1224 },
-            { "bairro": "Morada Dos Ventos", "count": 1129 },
-            { "bairro": "Morada Nova", "count": 1018 },
-            { "bairro": "Sítio Buriti", "count": 1015 },
-            { "bairro": "São Felipe", "count": 947 },
-            { "bairro": "Rodagem", "count": 926 },
-            { "bairro": "Pedrinhas", "count": 834 },
-            { "bairro": "Monsenhor Edson Magalhães", "count": 665 }
+                    {
+                              "bairro": "Centro",
+                              "count": 1753
+                    },
+                    {
+                              "bairro": "Mongubas",
+                              "count": 1523
+                    },
+                    {
+                              "bairro": "Bailarina",
+                              "count": 1224
+                    },
+                    {
+                              "bairro": "Morada Dos Ventos",
+                              "count": 1129
+                    },
+                    {
+                              "bairro": "Morada Nova",
+                              "count": 1018
+                    },
+                    {
+                              "bairro": "Sítio Buriti",
+                              "count": 1015
+                    },
+                    {
+                              "bairro": "São Felipe",
+                              "count": 947
+                    },
+                    {
+                              "bairro": "Rodagem",
+                              "count": 926
+                    },
+                    {
+                              "bairro": "Pedrinhas",
+                              "count": 834
+                    },
+                    {
+                              "bairro": "Monsenhor Edson Magalhães",
+                              "count": 665
+                    }
           ],
           "infraestrutura": {
-            "agua": { "sim_count": 10665, "pct": 72.92 },
-            "energia": { "sim_count": 14407, "pct": 98.51 },
-            "esgoto": { "sim_count": 3901, "pct": 26.67 },
-            "pavimentacao": { "sim_count": 11203, "pct": 76.6 },
-            "coleta_lixo": { "sim_count": 393, "pct": 2.69 },
-            "calcada": { "sim_count": 708, "pct": 4.84 },
-            "drenagem": { "sim_count": 20, "pct": 0.14 }
+                    "agua": {
+                              "sim_count": 10668,
+                              "pct": 72.93
+                    },
+                    "energia": {
+                              "sim_count": 14400,
+                              "pct": 98.45
+                    },
+                    "esgoto": {
+                              "sim_count": 3901,
+                              "pct": 26.67
+                    },
+                    "pavimentacao": {
+                              "sim_count": 11206,
+                              "pct": 76.61
+                    },
+                    "coleta_lixo": {
+                              "sim_count": 398,
+                              "pct": 2.72
+                    },
+                    "calcada": {
+                              "sim_count": 721,
+                              "pct": 4.93
+                    },
+                    "drenagem": {
+                              "sim_count": 21,
+                              "pct": 0.14
+                    }
           },
           "geometrias_invalidas": 8,
-          "lotes_sem_rua": 515,
+          "lotes_sem_rua": 533,
           "lotes_cadastro_status": {
-            "com_cadastro": 10216,
-            "sem_cadastro": 4409
+                    "com_cadastro": 10251,
+                    "sem_cadastro": 4376
           },
           "lotes_por_usuario": [
-            { "usuario": "postgres", "count": 14566 },
-            { "usuario": "Não Informado", "count": 51 },
-            { "usuario": "tiago_topogeo", "count": 6 },
-            { "usuario": "eriva_topogeo", "count": 1 },
-            { "usuario": "TIAGO_003", "count": 1 }
+                    {
+                              "usuario": "postgres",
+                              "count": 13634
+                    },
+                    {
+                              "usuario": "usuario_2_topogeo",
+                              "count": 771
+                    },
+                    {
+                              "usuario": "tiago_topogeo",
+                              "count": 103
+                    },
+                    {
+                              "usuario": "eriva_topogeo",
+                              "count": 58
+                    },
+                    {
+                              "usuario": "TIAGO_003",
+                              "count": 42
+                    },
+                    {
+                              "usuario": "RENE_FREITAS_002",
+                              "count": 9
+                    },
+                    {
+                              "usuario": "ERIVAN_ROCHA_001",
+                              "count": 5
+                    },
+                    {
+                              "usuario": "Não Informado",
+                              "count": 4
+                    },
+                    {
+                              "usuario": "BRUNO_004",
+                              "count": 1
+                    }
           ],
           "lotes_por_dia_timeline": [
-            { "data": "2026-06-03", "Não Informado": 9 },
-            { "data": "2026-06-04", "Não Informado": 4 },
-            { "data": "2026-06-09", "Não Informado": 1 },
-            { "data": "2026-06-11", "postgres": 2, "Não Informado": 1 },
-            { "data": "2026-06-12", "postgres": 2 },
-            { "data": "2026-06-15", "Não Informado": 10 },
-            { "data": "2026-06-18", "postgres": 2 },
-            { "data": "2026-06-23", "postgres": 1 },
-            { "data": "2026-06-25", "postgres": 1 },
-            { "data": "2026-06-26", "postgres": 1, "Não Informado": 1 },
-            { "data": "2026-06-30", "postgres": 1 },
-            { "data": "2026-07-01", "postgres": 3, "Não Informado": 2 },
-            { "data": "2026-07-02", "postgres": 2, "Não Informado": 6 },
-            { "data": "2026-07-06", "postgres": 2, "Não Informado": 1 },
-            { "data": "2026-07-24", "postgres": 1 },
-            { "data": "2026-07-26", "postgres": 1 },
-            { "data": "2026-07-27", "postgres": 4, "tiago_topogeo": 4 },
-            { "data": "2026-07-28", "tiago_topogeo": 1 },
-            { "data": "2026-07-29", "tiago_topogeo": 1, "eriva_topogeo": 1 },
-            { "data": "2026-08-07", "TIAGO_003": 1 }
+                    {
+                              "data": "2026-05-13",
+                              "postgres": 4612
+                    },
+                    {
+                              "data": "2026-05-28",
+                              "postgres": 1
+                    },
+                    {
+                              "data": "2026-06-09",
+                              "Não Informado": 1
+                    },
+                    {
+                              "data": "2026-06-11",
+                              "Não Informado": 1
+                    },
+                    {
+                              "data": "2026-06-18",
+                              "postgres": 1
+                    },
+                    {
+                              "data": "2026-07-01",
+                              "Não Informado": 2
+                    },
+                    {
+                              "data": "2026-07-06",
+                              "postgres": 2
+                    },
+                    {
+                              "data": "2026-07-08",
+                              "postgres": 9007
+                    },
+                    {
+                              "data": "2026-07-24",
+                              "postgres": 1,
+                              "usuario_2_topogeo": 27
+                    },
+                    {
+                              "data": "2026-07-26",
+                              "postgres": 1
+                    },
+                    {
+                              "data": "2026-07-27",
+                              "usuario_2_topogeo": 354,
+                              "tiago_topogeo": 33,
+                              "postgres": 4,
+                              "eriva_topogeo": 27
+                    },
+                    {
+                              "data": "2026-07-28",
+                              "usuario_2_topogeo": 35,
+                              "tiago_topogeo": 16,
+                              "eriva_topogeo": 1
+                    },
+                    {
+                              "data": "2026-07-29",
+                              "tiago_topogeo": 31,
+                              "eriva_topogeo": 17,
+                              "usuario_2_topogeo": 323
+                    },
+                    {
+                              "data": "2026-07-30",
+                              "eriva_topogeo": 13,
+                              "tiago_topogeo": 23,
+                              "usuario_2_topogeo": 32
+                    },
+                    {
+                              "data": "2026-08-07",
+                              "BRUNO_004": 1,
+                              "RENE_FREITAS_002": 1,
+                              "TIAGO_003": 5
+                    },
+                    {
+                              "data": "2026-08-10",
+                              "RENE_FREITAS_002": 8,
+                              "ERIVAN_ROCHA_001": 5,
+                              "TIAGO_003": 37
+                    }
           ]
-        };
+};
 
         let chartBairros = null;
         let chartCadastro = null;
@@ -1861,9 +2001,13 @@
 
             const userColors = {
                 'postgres': 'var(--cor-marca)',
+                'usuario_2_topogeo': '#38bdf8',
                 'tiago_topogeo': 'var(--cor-institucional)',
                 'eriva_topogeo': 'var(--cor-critico)',
                 'TIAGO_003': '#a855f7',
+                'RENE_FREITAS_002': '#f59e0b',
+                'ERIVAN_ROCHA_001': '#10b981',
+                'BRUNO_004': '#ec4899',
                 'Não Informado': '#64748b'
             };
 
