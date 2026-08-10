@@ -323,25 +323,6 @@
             gap: var(--espaco-3);
         }
 
-        .topo__assinatura {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--espaco-2);
-            min-height: 38px;
-            padding-right: var(--espaco-2);
-            color: var(--cor-texto-secundario);
-            font-size: var(--tamanho-texto-pequeno);
-            white-space: nowrap;
-        }
-
-        .topo__precision-logo {
-            display: block;
-            width: auto;
-            height: 34px;
-            max-width: 120px;
-            object-fit: contain;
-        }
-
         .topo__status {
             display: inline-flex;
             align-items: center;
@@ -804,6 +785,42 @@
             background: linear-gradient(to right, var(--cor-institucional), var(--cor-marca));
         }
 
+        .rodape-corporativo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--espaco-3);
+            padding: var(--espaco-5) var(--espaco-3) var(--espaco-2);
+            color: var(--cor-texto-secundario-sobre-fundo);
+            font-size: var(--tamanho-texto-pequeno);
+        }
+
+        .rodape-corporativo__produto,
+        .rodape-corporativo__empresa {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--espaco-2);
+        }
+
+        .rodape-corporativo__produto img {
+            width: auto;
+            height: 34px;
+            opacity: 0.9;
+        }
+
+        .rodape-corporativo__empresa img {
+            width: auto;
+            height: 30px;
+            opacity: 0.82;
+        }
+
+        .rodape-corporativo__separador {
+            width: 1px;
+            height: 28px;
+            background: var(--cor-borda);
+            opacity: 0.75;
+        }
+
         .text-slate-100,
         .text-slate-200,
         .text-brand-500,
@@ -903,9 +920,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .topo__assinatura span {
-                display: none;
-            }
         }
 
         @media (max-width: 720px) {
@@ -939,7 +953,6 @@
             }
 
             .topo__titulo span,
-            .topo__assinatura,
             .topo__status {
                 display: none;
             }
@@ -994,6 +1007,15 @@
             .topo__ferramentas {
                 gap: var(--espaco-2);
             }
+
+            .rodape-corporativo {
+                flex-direction: column;
+                gap: var(--espaco-2);
+            }
+
+            .rodape-corporativo__separador {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -1016,10 +1038,6 @@
             </a>
             
             <div class="topo__ferramentas">
-                <div class="topo__assinatura" aria-label="Produto da Precision">
-                    <span>Produto</span>
-                    <img class="topo__precision-logo" src="assets/logos/logo_precision.svg" alt="Precision" />
-                </div>
                 <!-- Connection Badge -->
                 <div class="topo__status">
                     <span class="topo__status-ponto" aria-hidden="true"></span>
@@ -1058,7 +1076,7 @@
                 </li>
                 <li>
                     <a href="#infra" class="menu__item">
-                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">water_drop</span>
+                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">domain</span>
                         <span class="menu__texto"><span class="menu__nome">Infraestrutura</span></span>
                     </a>
                 </li>
@@ -1073,14 +1091,6 @@
                     <a href="#mapa-section" class="menu__item">
                         <span class="menu__icone material-symbols-outlined" aria-hidden="true">travel_explore</span>
                         <span class="menu__texto"><span class="menu__nome">Mapa SIG</span></span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="menu__rodape">
-                <li>
-                    <a href="#mapa-section" class="menu__item" title="Banco PostGIS">
-                        <span class="menu__icone material-symbols-outlined" aria-hidden="true">database</span>
-                        <span class="menu__texto"><span class="menu__nome">PostgreSQL 15+</span></span>
                     </a>
                 </li>
             </ul>
@@ -1142,30 +1152,27 @@
                             </p>
                         </div>
                         <div class="h-12 w-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xl border border-indigo-500/20 z-10">
-                            <i class="fa-solid fa-users"></i>
+                            <span class="material-symbols-outlined" aria-hidden="true">badge</span>
                         </div>
                     </div>
 
-                    <!-- Card 4: Logradouros -->
+                    <!-- Card 4: Bairros -->
                     <div class="glass-card geo-metrica rounded-2xl p-5 flex items-center justify-between relative overflow-hidden">
                         <div class="space-y-1 z-10">
-                            <span class="text-xs font-semibold text-slate-200 uppercase tracking-wider">Logradouros e Bairros</span>
-                            <div class="text-3xl font-bold text-slate-100 flex items-baseline gap-1.5">
-                                <span id="stat-ruas">548</span>
-                                <span class="text-sm font-normal text-slate-200">ruas / <span id="stat-bairros">24</span> bairros</span>
-                            </div>
+                            <span class="text-xs font-semibold text-slate-200 uppercase tracking-wider">Bairros</span>
+                            <div class="text-3xl font-bold text-slate-100" id="stat-bairros">24</div>
                             <p class="text-[10px] text-slate-200 mt-1">
-                                Divisões territoriais ativas
+                                Divisões territoriais cadastradas
                             </p>
                         </div>
                         <div class="h-12 w-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl border border-amber-500/20 z-10">
-                            <i class="fa-solid fa-road"></i>
+                            <span class="material-symbols-outlined" aria-hidden="true">map</span>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Charts Section 1: Bairros & Status de Registro -->
+                <!-- Charts Section 1: Bairros & Cadastro de Imóveis -->
                 <div class="geo-grid geo-grid--duas">
                     
                     <!-- Bairros Chart (Left) -->
@@ -1186,10 +1193,10 @@
                     <div class="glass-card rounded-2xl p-5 flex flex-col">
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <h3 class="font-bold text-slate-100">Status de Registro (BCI)</h3>
-                                <p class="text-xs text-slate-200">Lotes com boletim imobiliário preenchido</p>
+                                <h3 class="font-bold text-slate-100">Cadastro de Imóveis</h3>
+                                <p class="text-xs text-slate-200">Com cadastro quando `nm_proprietario_espelho` está preenchido</p>
                             </div>
-                            <span class="text-xs bg-brand-500/10 text-brand-500 font-semibold px-2.5 py-1 rounded-lg border border-brand-500/25">Cadastro</span>
+                            <span class="text-xs bg-brand-500/10 text-brand-500 font-semibold px-2.5 py-1 rounded-lg border border-brand-500/25">Imóveis</span>
                         </div>
                         <div class="flex-1 min-h-[300px] flex items-center justify-center relative">
                             <canvas id="chart-cadastro-status"></canvas>
@@ -1386,16 +1393,23 @@
                             <p class="text-xs text-slate-200">Contexto geográfico do município de Acaraú, Ceará</p>
                         </div>
                         <div class="flex gap-2">
-                            <span class="text-xs bg-slate-50/5 text-slate-100 font-semibold px-2.5 py-1 rounded-lg border border-slate-800">PostGIS Ativo</span>
                             <span class="text-xs bg-brand-500/10 text-brand-500 font-semibold px-2.5 py-1 rounded-lg border border-brand-500/25">Acaraú/CE</span>
                         </div>
                     </div>
                     <!-- Map Container -->
                     <div class="w-full h-[450px] rounded-xl border border-slate-800 overflow-hidden relative" style="background: #090d16;" id="map"></div>
-                    <p class="text-[10px] text-slate-200 mt-3 text-right">
-                        Mapas base fornecidos por CartoDB - Centralizado no Geocadastro de Acaraú (Lat: -2.8856, Lng: -40.1172)
-                    </p>
                 </div>
+
+                <footer class="rodape-corporativo" aria-label="Identidade corporativa">
+                    <span class="rodape-corporativo__produto">
+                        <img src="assets/logos/logo_geocity.svg" alt="GEOcity" />
+                    </span>
+                    <span class="rodape-corporativo__separador" aria-hidden="true"></span>
+                    <span class="rodape-corporativo__empresa">
+                        <span>um produto</span>
+                        <img src="assets/logos/logo_precision.svg" alt="Precision" />
+                    </span>
+                </footer>
 
             </main>
     </div>
@@ -1625,7 +1639,7 @@
             chartCadastro = new Chart(ctxCadastro, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Com Cadastro (BCI)', 'Sem Cadastro'],
+                    labels: ['Imóveis com cadastro', 'Imóveis não cadastrados'],
                     datasets: [{
                         data: [dbData.lotes_cadastro_status.com_cadastro, dbData.lotes_cadastro_status.sem_cadastro],
                         backgroundColor: [
@@ -1886,7 +1900,7 @@
                         <div class="space-y-1 text-xs">
                             <div class="font-bold text-sm border-b pb-1 text-principal" style="color:var(--cor-texto-principal)">Lote Cadastral</div>
                             <div class="text-secundario" style="color:var(--cor-texto-secundario)"><strong>Bairro:</strong> ${props.bairro}</div>
-                            <div class="text-secundario" style="color:var(--cor-texto-secundario)"><strong>Código BCI:</strong> ${props.bci}</div>
+                            <div class="text-secundario" style="color:var(--cor-texto-secundario)"><strong>Código cadastral:</strong> ${props.bci}</div>
                             <div class="text-secundario" style="color:var(--cor-texto-secundario)"><strong>Proprietário:</strong> ${props.owner}</div>
                             <div class="font-semibold" style="${badgeColor}"><strong>Status:</strong> ${status}</div>
                         </div>
