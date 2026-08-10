@@ -1973,11 +1973,18 @@
                 },
                 "layers": [
                     {
+                        "id": "base-white",
+                        "type": "background",
+                        "paint": {
+                            "background-color": "#ffffff"
+                        }
+                    },
+                    {
                         "id": "base-satellite",
                         "type": "raster",
                         "source": "satellite-tiles",
                         "minzoom": 0,
-                        "maxzoom": 20,
+                        "maxzoom": 18,
                         "paint": {
                             "raster-opacity": 0.60,
                             "raster-brightness-max": 0.70,
@@ -2095,6 +2102,7 @@
                 style: styleJson,
                 center: [-40.11827052270788, -2.8851993922845343], // Center exactly on Center of Acaraú real centroid
                 zoom: 16.2, // Detailed zoom to see individual properties
+                maxZoom: 18,
                 attributionControl: false
             });
 
