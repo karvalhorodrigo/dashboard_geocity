@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoPainel - Dashboard Gerencial</title>
-    <meta name="description" content="Dashboard gerencial do cadastro imobiliário e geocadastro baseado no banco de dados do Supabase.">
+    <title>GEOcity - Dashboard Gerencial | Precision</title>
+    <meta name="description" content="Dashboard gerencial GEOcity, produto Precision para cadastro imobiliário e geocadastro.">
     <script>
         (function () {
             "use strict";
@@ -286,21 +286,17 @@
         .topo__marca {
             display: flex;
             align-items: center;
-            gap: var(--espaco-3);
+            gap: var(--espaco-4);
             text-decoration: none;
             min-width: 0;
         }
 
-        .topo__simbolo {
-            width: 42px;
-            height: 42px;
-            border-radius: var(--raio-medio);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--cor-texto-invertido);
-            background: var(--cor-institucional);
-            box-shadow: var(--sombra-painel);
+        .topo__produto-logo {
+            display: block;
+            width: auto;
+            height: 50px;
+            max-width: 148px;
+            object-fit: contain;
         }
 
         .topo__titulo {
@@ -325,6 +321,25 @@
             display: flex;
             align-items: center;
             gap: var(--espaco-3);
+        }
+
+        .topo__assinatura {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--espaco-2);
+            min-height: 38px;
+            padding-right: var(--espaco-2);
+            color: var(--cor-texto-secundario);
+            font-size: var(--tamanho-texto-pequeno);
+            white-space: nowrap;
+        }
+
+        .topo__precision-logo {
+            display: block;
+            width: auto;
+            height: 34px;
+            max-width: 120px;
+            object-fit: contain;
         }
 
         .topo__status {
@@ -887,6 +902,10 @@
             .geo-grid--meio {
                 grid-template-columns: 1fr;
             }
+
+            .topo__assinatura span {
+                display: none;
+            }
         }
 
         @media (max-width: 720px) {
@@ -906,6 +925,21 @@
                 padding: 0 var(--espaco-3);
             }
 
+            .topo__marca {
+                gap: var(--espaco-2);
+            }
+
+            .topo__produto-logo {
+                height: 42px;
+                max-width: 96px;
+            }
+
+            .topo__titulo strong {
+                font-size: 16px;
+            }
+
+            .topo__titulo span,
+            .topo__assinatura,
             .topo__status {
                 display: none;
             }
@@ -947,6 +981,20 @@
                 padding: var(--espaco-4);
             }
         }
+
+        @media (max-width: 420px) {
+            .topo__titulo {
+                display: none;
+            }
+
+            .topo__produto-logo {
+                max-width: 76px;
+            }
+
+            .topo__ferramentas {
+                gap: var(--espaco-2);
+            }
+        }
     </style>
 </head>
 <body>
@@ -959,17 +1007,19 @@
         
         <!-- Header / Top Bar -->
         <header class="topo" role="banner">
-            <a class="topo__marca" href="#geral" aria-label="GeoCity - página inicial">
-                <span class="topo__simbolo" aria-hidden="true">
-                    <span class="material-symbols-outlined">map</span>
-                </span>
+            <a class="topo__marca" href="#geral" aria-label="GEOcity - página inicial">
+                <img class="topo__produto-logo" src="assets/logos/logo_geocity.svg" alt="GEOcity" />
                 <span class="topo__titulo">
-                    <strong>GeoCity</strong>
-                    <span>Dashboard Gerencial do Cadastro Imobiliário</span>
+                    <strong>GEOcity</strong>
+                    <span>Dashboard gerencial do cadastro imobiliário</span>
                 </span>
             </a>
             
             <div class="topo__ferramentas">
+                <div class="topo__assinatura" aria-label="Produto da Precision">
+                    <span>Produto</span>
+                    <img class="topo__precision-logo" src="assets/logos/logo_precision.svg" alt="Precision" />
+                </div>
                 <!-- Connection Badge -->
                 <div class="topo__status">
                     <span class="topo__status-ponto" aria-hidden="true"></span>
@@ -1018,7 +1068,7 @@
                         <span class="menu__texto"><span class="menu__nome">Consistência</span></span>
                     </a>
                 </li>
-                <li class="menu__grupo"><span class="menu__grupo-nome">GEOconnect</span></li>
+                <li class="menu__grupo"><span class="menu__grupo-nome">GEOcity</span></li>
                 <li>
                     <a href="#mapa-section" class="menu__item">
                         <span class="menu__icone material-symbols-outlined" aria-hidden="true">travel_explore</span>
@@ -1042,8 +1092,8 @@
                 <!-- Welcome Bar -->
                 <section class="pagina-cabecalho" id="geral">
                     <div class="ferramenta-identidade">
-                        <strong>GEOconnect</strong>
-                        <span>— uma ferramenta Precision+</span>
+                        <strong>GEOcity</strong>
+                        <span>- um produto Precision</span>
                     </div>
                     <div>
                         <h2 class="text-2xl font-bold tracking-tight text-slate-100">Indicadores de Cadastro Territorial</h2>
