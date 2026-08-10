@@ -2162,6 +2162,7 @@
 
         function carregarCamadasMapa() {
             if (!map) return;
+            if (map.getSource('real-lotes-source')) return; // Já carregado com segurança
 
             // 1. Add Real Lots GeoJSON Source
             map.addSource('real-lotes-source', {
