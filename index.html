@@ -1516,6 +1516,7 @@
                         </div>
                         <div class="flex gap-2">
                             <span class="text-xs bg-brand-500/10 text-brand-500 font-semibold px-2.5 py-1 rounded-lg border border-brand-500/25">Acaraú/CE</span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm" id="live-indicator"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <span id="live-status-text">Tempo Real Conectado</span></span>
                         </div>
                     </div>
                     <!-- Map Container -->
@@ -1717,7 +1718,28 @@
             claro: { icone: 'light_mode', rotulo: 'Claro' },
             escuro: { icone: 'dark_mode', rotulo: 'Escuro' }
         };
-        let modoTemaAtual = 'automatico';
+                let modoTemaAtual = 'automatico';
+
+        // Paleta estrita solicitada: Vermelho, Azul, Amarelo, Verde, Laranja, Roxo, Preto, Cinza, Rosa
+        const CORES_PERMITIDAS = [
+            '#3b82f6', // Azul
+            '#10b981', // Verde
+            '#f97316', // Laranja
+            '#ec4899', // Rosa
+            '#94a3b8', // Cinza
+            '#ef4444', // Vermelho
+            '#eab308', // Amarelo
+            '#a855f7', // Roxo
+            '#1e293b'  // Preto
+        ];
+
+        const mapaCoresFixo = {
+            'Tiago': '#3b82f6',         // Azul
+            'Erivan Rocha': '#10b981',  // Verde
+            'Rene Freitas': '#f97316',  // Laranja
+            'Bruno': '#ec4899',         // Rosa
+            'Não Informado': '#94a3b8'  // Cinza
+        };
 
         function sistemaPrefereEscuro() {
             return Boolean(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -2294,12 +2316,135 @@
         }
 
         // Initialize elements when page loads
+        // ==========================================
+        // SINCRONIZAÇÃO EM TEMPO REAL COM SUPABASE
+        // ==========================================
+        const SUPABASE_LIVE_ENDPOINT = "https://worhcdypkjzrphxqtija.supabase.co/functions/v1/dashboard?format=json";
+
+        async function sincronizarDadosEmTempoReal() {
+            const statusIndicator = document.getElementById('live-status-text');
+            try {
+                if (statusIndicator) statusIndicator.textContent = 'Atualizando...';
+                
+                const response = await fetch(SUPABASE_LIVE_ENDPOINT, { cache: "no-store" });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const liveData = await response.json();
+                
+                // 1. Atualiza dbData e GeoJSON
+                if (liveData.geojson_lotes) {
+                    window.realLotesGeoJSON = liveData.geojson_lotes;
+                    const mapSource = map ? map.getSource('real-lotes-source') : null;
+                    if (mapSource && typeof mapSource.setData === 'function') {
+                        mapSource.setData(liveData.geojson_lotes);
+                    }
+                }
+                
+                // 2. Atualiza os dados de estatísticas
+                Object.assign(dbData, liveData);
+                delete dbData.geojson_lotes;
+
+                // 3. Atualiza os Cards de KPIs no topo
+                atualizarTextoElemento('total-lotes', dbData.total_lotes?.toLocaleString('pt-BR'));
+                atualizarTextoElemento('total-edificacoes', dbData.total_edificacoes?.toLocaleString('pt-BR'));
+                atualizarTextoElemento('total-proprietarios', dbData.total_proprietarios?.toLocaleString('pt-BR'));
+                atualizarTextoElemento('total-bairros', dbData.total_bairros?.toLocaleString('pt-BR'));
+                atualizarTextoElemento('total-ruas', dbData.total_ruas?.toLocaleString('pt-BR'));
+
+                // 4. Atualiza os Gráficos Chart.js
+                if (chartBairros && dbData.top_bairros) {
+                    chartBairros.data.labels = dbData.top_bairros.map(item => quebrarRotuloGrafico(item.bairro));
+                    chartBairros.data.datasets[0].data = dbData.top_bairros.map(item => item.count);
+                    chartBairros.update();
+                }
+
+                if (chartCadastro && dbData.lotes_cadastro_status) {
+                    chartCadastro.data.datasets[0].data = [
+                        dbData.lotes_cadastro_status.com_cadastro,
+                        dbData.lotes_cadastro_status.sem_cadastro
+                    ];
+                    chartCadastro.update();
+                }
+
+                if (chartTimeline && dbData.lotes_por_dia_timeline) {
+                    const uniqueUsers = new Set();
+                    dbData.lotes_por_dia_timeline.forEach(entry => {
+                        Object.keys(entry).forEach(key => {
+                            if (key !== 'data') uniqueUsers.add(key);
+                        });
+                    });
+
+                    const timelineLabels = dbData.lotes_por_dia_timeline.map(entry => {
+                        const parts = entry.data.split('-');
+                        if (parts.length === 3) return `${parts[2]}/${parts[1]}`;
+                        return entry.data;
+                    });
+
+                    let corIndex = 0;
+                    const coresAtribuidas = {};
+
+                    const datasets = Array.from(uniqueUsers)
+                        .map(usr => {
+                            const dataPoints = dbData.lotes_por_dia_timeline.map(entry => entry[usr] || 0);
+                            const totalUpdates = dataPoints.reduce((a, b) => a + b, 0);
+                            
+                            let color = mapaCoresFixo[usr];
+                            if (!color) {
+                                while (corIndex < CORES_PERMITIDAS.length && Object.values(coresAtribuidas).includes(CORES_PERMITIDAS[corIndex])) {
+                                    corIndex++;
+                                }
+                                color = CORES_PERMITIDAS[corIndex % CORES_PERMITIDAS.length];
+                                corIndex++;
+                            }
+                            coresAtribuidas[usr] = color;
+
+                            return {
+                                label: usr,
+                                data: dataPoints,
+                                totalUpdates: totalUpdates,
+                                borderColor: color,
+                                backgroundColor: color + '15',
+                                borderWidth: 2.5,
+                                pointRadius: (ctx) => (ctx.raw > 0 ? 4.5 : 0),
+                                pointHoverRadius: (ctx) => (ctx.raw > 0 ? 7 : 0),
+                                tension: 0.25,
+                                fill: false
+                            };
+                        })
+                        .filter(ds => ds.totalUpdates > 0);
+
+                    chartTimeline.data.labels = timelineLabels;
+                    chartTimeline.data.datasets = datasets;
+                    chartTimeline.update();
+                }
+
+                // 5. Atualiza o Ranking de Usuários
+                renderizarRankingUsuarios();
+                renderizarResumoCadastro();
+
+                if (statusIndicator) statusIndicator.textContent = 'Tempo Real Conectado';
+                console.log('Dados sincronizados em tempo real com o Supabase com sucesso!', new Date().toLocaleTimeString());
+            } catch (err) {
+                console.warn('Usando dados em cache local. Erro ao sincronizar:', err);
+                if (statusIndicator) statusIndicator.textContent = 'Modo Local (Cache)';
+            }
+        }
+
+        function atualizarTextoElemento(id, texto) {
+            const el = document.getElementById(id);
+            if (el && texto !== undefined) el.textContent = texto;
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             predefinirTema();
             inicializarGraficos();
             renderizarRankingUsuarios();
             renderizarResumoCadastro();
             inicializarMapa();
+            
+            // Busca dados em tempo real imediatamente e agenda refresh a cada 30 segundos
+            sincronizarDadosEmTempoReal();
+            setInterval(sincronizarDadosEmTempoReal, 30000);
 
             const menu = document.querySelector('.menu');
             const botaoFixar = document.querySelector('[data-menu-fixar]');
