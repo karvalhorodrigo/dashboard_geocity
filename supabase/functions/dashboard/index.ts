@@ -48,12 +48,14 @@ serve(async (req) => {
       .replace("__DB_DATA_PLACEHOLDER__", dbDataJsonStr)
       .replace("__GEOJSON_PLACEHOLDER__", geojsonStr);
 
+    const headers = new Headers();
+    headers.set("Content-Type", "text/html; charset=utf-8");
+    headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
+    headers.set("Access-Control-Allow-Origin", "*");
+
     return new Response(html, {
-      headers: {
-        "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Access-Control-Allow-Origin": "*",
-      },
+      status: 200,
+      headers: headers,
     });
   } catch (err: any) {
     return new Response(`Erro interno no servidor: ${err.message}`, {
